@@ -28,4 +28,4 @@ dependencies:
 ### Shape Formation
 > shape_formation.bzz
 
-> Use Lennard Jones potential field to achieve cell lattice using 20 khepera robots under the yellow light source.
+> Use Lennard Jones potential field to form a cell lattice using 20 khepera robots under a light source.
