@@ -41,10 +41,10 @@
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
-  <arena size="4, 10, 2" center="0,0,0.0">
+  <arena size="4, 10, 3" center="0,0,0.0">
     
     <light id="light"
-           position="0,4,0.5"
+           position="0,4,1.0"
            orientation="0,0,0"
            color="yellow"
            intensity="10.0"
@@ -62,23 +62,23 @@
     <box id="wall_west" size="0.1,10,0.5" movable="false">
       <body position="-2,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_1" size="1,2,0.5" movable="false">
-      <body position="-1.5,2,0" orientation="0,0,0" />
+    <box id="wall_lefttop" size="1.5,2,0.5" movable="false">
+      <body position="-1.25,2,0" orientation="0,0,0" />
     </box>
-    <box id="wall_2" size="1,2,0.5" movable="false">
-      <body position="1.5,2,0" orientation="0,0,0" />
+    <box id="wall_2=righttop" size="1.5,2,0.5" movable="false">
+      <body position="1.25,2,0" orientation="0,0,0" />
     </box>
-    <box id="wall_3" size="1.5,2,0.5" movable="false">
-      <body position="-1.25,0,0" orientation="0,0,0" />
+    <box id="wall_leftmiddle" size="1,2,0.5" movable="false">
+      <body position="-1.5,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_4" size="1.5,2,0.5" movable="false">
-      <body position="1.25,0,0" orientation="0,0,0" />
+    <box id="wall_rightmiddle" size="1,2,0.5" movable="false">
+      <body position="1.5,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_5" size="1,2,0.5" movable="false">
-      <body position="-1.5,-2.0,0" orientation="0,0,0" />
+    <box id="wall_leftbottom" size="1.5,2,0.5" movable="false">
+      <body position="-1.25,-2.0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_6" size="1,2,0.5" movable="false">
-      <body position=" 1.5,-2.0,0" orientation="0,0,0" />
+    <box id="wall_rightbottom" size="1.5,2,0.5" movable="false">
+      <body position=" 1.25,-2.0,0" orientation="0,0,0" />
     </box>
 
     <!--
