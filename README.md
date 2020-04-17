@@ -3,6 +3,7 @@
 - **Schelling Model**
 - **Synchronizer**
 - **Quorum Sensing**
+- **Shape Formation**
 
 dependencies:
 1. python3
@@ -23,3 +24,8 @@ dependencies:
 > QuorumSensing.py
 
 > Quorum Sensing is a strategy that bacteria uses to estimate the group size. Each agent has a probability to initiate a signal and can only initiate signal once. Its neighoring agents will detect the signal and keep spreading the signal. The agent either initiated a signal or passed a signal will go to "silent" state for some time step, during which it cannot initiate or pass signal. Upon initiating or receiving signal, the group size estimation for the agent will add by 1. The estimation finishes when all the agents have initiated signal.
+
+### Shape Formation
+> shape_formation.bzz
+
+> Use Lennard Jones potential field to achieve cell lattice using 20 khepera robots under the yellow light source.
