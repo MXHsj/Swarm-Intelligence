@@ -5,10 +5,13 @@
 - **Quorum Sensing**
 - **Shape Formation**
 
-dependencies:
+python depenencies
 1. python3
 2. matplotlib
 3. numpy
+
+buzz & argos installation
+- see RBE595_ARGoS_Buzz_Installations.pdf
 
 ### Schelling Model
 > Schelling.py
