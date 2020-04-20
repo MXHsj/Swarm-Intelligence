@@ -1,15 +1,17 @@
 # RBE595 Special Topics - Swarm Intelligence
 
-- **Schelling Model**
-- **Synchronizer**
-- **Quorum Sensing**
-- **Shape Formation**
+1. **Schelling Model**
+2. **Synchronizer**
+3. **Quorum Sensing**
+4. **Obstacle Avoidance**
+5. **Shape Formation**
+6. **Task Allocation**
 
 python depenencies
-1. python3
-2. matplotlib
-3. numpy
-
+- python3
+- matplotlib
+- numpy
+ 
 buzz & argos installation
 - see RBE595_ARGoS_Buzz_Installations.pdf
 
@@ -31,4 +33,14 @@ buzz & argos installation
 ### Shape Formation
 > shape_formation.bzz
 
-> Use Lennard Jones potential field to form a cell lattice using 20 khepera robots under a light source.
+> Use Lennard Jones potential field to form a cell lattice using 20 Khepera robots.
+
+### Obstacle Avoidace
+> obstacle_avoidacen.bzz
+
+> Use proximity sensors mounted on Khepera robot to perform obstacle avoidace.
+
+### Task Allocation
+> task_allocation.bzz
+
+> Implement the Threshold Model proposed by Theraulaz et al. Two types of tasks (0,1) are allocated among 5 agents. The simulation is run for 3000 time steps where specialization on tasks can be observed.
