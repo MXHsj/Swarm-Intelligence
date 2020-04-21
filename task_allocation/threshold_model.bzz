@@ -1,0 +1,81 @@
+# Reinforce parameter at slide 11
+XSI = 10.0
+# Forget parameter at slide 11
+PHI = 1.0
+# Spontaneous switching at slide 15
+P = 0.2
+# Number of tasks: if you change this, you must also change the corresponding
+# parameter in the .argos file!
+TASKS = 2
+
+function threshold_model() {
+	# Perform probabilistic switching as explained in the slides
+	other_task = (task + 1) % TASKS
+	T = stimulus[other_task]*stimulus[other_task]/(stimulus[other_task]*stimulus[other_task]+threshold[other_task]*threshold[other_task])
+	if (math.rng.uniform(1.0) < T) {
+		task = other_task
+	}
+	# Spontaneous switching
+	else if (math.rng.uniform(1.0) < P) {
+		task = other_task
+	}
+	
+	threshold[0] = threshold[0] + 1.5
+	threshold[0] = threshold[0] + 2.5
+
+	# reinforce / forget
+  if (task == 0) {
+		threshold[0] = threshold[0] - XSI
+		threshold[1] = threshold[1] + PHI
+	}
+	else if (task == 1) {
+		threshold[1] = threshold[1] - XSI
+		threshold[0] = threshold[0] + PHI
+	}
+	
+	# apply min max values to threshold
+	if (threshold[0] > 1000.0) {
+		threshold[0] = 1000.0
+	}
+	else if (threshold[0] < 1.0) {
+		threshold[0] = 1.0
+	}
+	if (threshold[1] > 1000.0) {
+		threshold[1] = 1000.0
+	}
+	else if (threshold[1] < 1.0) {
+		threshold[1] = 1.0
+	}
+}
+
+function init() {
+	timestep = 0
+  # randomly pick a task
+	math.rng.setseed(id)
+  task = math.rng.uniform(2)
+  # Pick thresholds for the tasks
+  threshold = {}
+  threshold[0] = 500.0
+  threshold[1] = 500.0
+	# only record 5 agents, same as the paper
+	s1 = swarm.create(1)
+  s1.select(id<=5)
+}
+
+function step() {
+	# exit condition
+	if (timestep >= 3000) {
+		log("finished")
+		exit()
+	}
+	# bug in stimulus
+	timestep = timestep + 1
+  if (stimulus == nil and timestep <= 2) {
+  		return
+  }
+	s1.exec(threshold_model)
+}
+
+function destroy() {
+  # Nothing to do really
+}

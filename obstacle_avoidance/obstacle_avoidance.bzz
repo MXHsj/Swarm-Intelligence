@@ -1,0 +1,43 @@
+### Obstacle Avoidance ###
+
+var kp = 20.0
+var v = 2.5							# default linear velocity
+var safeVal = 0.1
+
+# Executed once at init time.
+function init() {
+}
+ 
+# Executed at each time step.
+function step() {
+	var sensorID = 0
+	var w = 0.0
+	while(sensorID < 8) {
+		var frontValue = proximity[sensorID].value
+		var frontAngle = proximity[sensorID].angle
+		# log(frontValue)
+		if(frontValue >= safeVal) {
+			if(frontAngle == 0) {
+				w = 5				# turning
+				sensorID = 8		# break
+			}
+			else {
+				w = kp*frontAngle	# turning
+				sensorID = 8		# break
+			}
+		}
+		else {
+			w = 0					# go straight
+		}
+		sensorID = sensorID + 1
+	}
+	gotop(v, w)
+}
+
+# Executed once when the robot (or the simulator) is reset.
+function reset() {
+}
+ 
+# Executed once at the end of experiment.
+function destroy() {
+}
