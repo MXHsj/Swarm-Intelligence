@@ -55,8 +55,8 @@ function init() {
   task = math.rng.uniform(2)
   # Pick thresholds for the tasks
   threshold = {}
-  threshold[0] = 200.0
-  threshold[1] = 400.0
+  threshold[0] = 500.0
+  threshold[1] = 500.0
 	# only record 5 agents, same as the paper
 	s1 = swarm.create(1)
   s1.select(id<=5)

@@ -46,43 +46,83 @@ x50 = zeros(length(time),1);
 x51 = zeros(length(time),1);
 
 for i = 1:length(time)
-    x10(i) = sum(agent1(1:i,3)==0)/i;
+    if i <= 100
+        x10(i) = sum(agent1(1:i,3)==0)/i;
+    else
+        x10(i) = sum(agent1(i-100:i,3)==0)/100;
+    end
 end
 
 for i = 1:length(time)
-    x11(i) = sum(agent1(1:i,3)==1)/i;
+    if i <= 100
+        x11(i) = sum(agent1(1:i,3)==1)/i;
+    else
+        x11(i) = sum(agent1(i-100:i,3)==1)/100;
+    end
 end
 
 for i = 1:length(time)
-    x20(i) = sum(agent2(1:i,3)==0)/i;
+    if i <= 100
+        x20(i) = sum(agent2(1:i,3)==0)/i;
+    else
+        x20(i) = sum(agent2(i-100:i,3)==0)/100;
+    end
 end
 
 for i = 1:length(time)
-    x21(i) = sum(agent2(1:i,3)==1)/i;
+    if i <= 100
+        x21(i) = sum(agent2(1:i,3)==1)/i;
+    else
+        x21(i) = sum(agent2(i-100:i,3)==1)/100;
+    end
 end
 
 for i = 1:length(time)
-    x30(i) = sum(agent3(1:i,3)==0)/i;
+    if i <= 100
+        x30(i) = sum(agent3(1:i,3)==0)/i;
+    else
+        x30(i) = sum(agent3(i-100:i,3)==0)/100;
+    end
 end
 
 for i = 1:length(time)
-    x31(i) = sum(agent3(1:i,3)==1)/i;
+    if i <= 100
+        x31(i) = sum(agent3(1:i,3)==1)/i;
+    else
+        x31(i) = sum(agent3(i-100:i,3)==1)/100;
+    end
 end
 
 for i = 1:length(time)
-    x40(i) = sum(agent4(1:i,3)==0)/i;
+    if i <= 100
+        x40(i) = sum(agent4(1:i,3)==0)/i;
+    else
+        x40(i) = sum(agent4(i-100:i,3)==0)/100;
+    end
 end
 
 for i = 1:length(time)
-    x41(i) = sum(agent4(1:i,3)==1)/i;
+    if i <= 100
+        x41(i) = sum(agent4(1:i,3)==1)/i;
+    else
+        x41(i) = sum(agent4(i-100:i,3)==1)/100;
+    end
 end
 
 for i = 1:length(time)
-    x40(i) = sum(agent5(1:i,3)==0)/i;
+    if i <= 100
+        x50(i) = sum(agent5(1:i,3)==0)/i;
+    else
+        x50(i) = sum(agent5(i-100:i,3)==0)/100;
+    end
 end
 
 for i = 1:length(time)
-    x41(i) = sum(agent5(1:i,3)==1)/i;
+    if i <= 100
+        x51(i) = sum(agent5(1:i,3)==1)/i;
+    else
+        x51(i) = sum(agent5(i-100:i,3)==1)/100;
+    end
 end
 
 figure
