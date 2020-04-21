@@ -115,23 +115,12 @@
         <cylinder id="c" height="0.2" radius="0.15" movable="false" />
       </entity>
     </distribute> -->
-    
+
+
+
   </arena>
 
-  <camera>
-    <placement idx="0" position="0.061976,-0.376327,3.33213" look_at="0.0316792,-0.376245,2.33259" up="-0.999537,0.00268038,0.0302969" lens_focal_length="10" />
-    <placement idx="1" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="2" position="-0.687339,0.461376,1.87039" look_at="-0.687339,0.461376,0.870385" up="0.0422887,0.999105,0" lens_focal_length="3" />
-    <placement idx="3" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="4" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="5" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="6" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="7" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="8" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="9" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="10" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-    <placement idx="11" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-  </camera>
+  
   
   <!-- ******************* -->
   <!-- * Physics engines * -->
@@ -155,6 +144,22 @@
   <visualization>
     <qt-opengl>
       <user_functions label="buzz_qt" />
+
+      <camera>
+        <placement idx="0" position="0.061976,-0.376327,3.33213" look_at="0.0316792,-0.376245,2.33259" up="-0.999537,0.00268038,0.0302969" lens_focal_length="10" />
+        <placement idx="1" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="2" position="-0.687339,0.461376,1.87039" look_at="-0.687339,0.461376,0.870385" up="0.0422887,0.999105,0" lens_focal_length="3" />
+        <placement idx="3" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="4" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="5" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="6" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="7" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="8" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="9" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="10" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="11" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+      </camera>
+
     </qt-opengl>
   </visualization>
 
