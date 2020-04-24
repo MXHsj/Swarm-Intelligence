@@ -1,1 +1,103 @@
-# nothing yet
+## shape formation 
+# two groups black nodes surrounding red nodes
+# takes around 1000 interation to get a perfect formation
+
+# We need this for 2D vectors
+include "vec2.bzz"
+
+# Lennard-Jones parameters
+TARGET_KIN     = 20.0
+EPSILON_KIN    = 700.0
+TARGET_NONKIN  = 60.0
+EPSILON_NONKIN = 200.0
+
+# Lennard-Jones interaction magnitude
+function lj_magnitude(dist, target, epsilon) {
+  return -(epsilon / dist) * ((target / dist)^4 - (target / dist)^2)
+}
+
+# Neighbor data to LJ interaction vector
+function lj_vector_kin(rid, data) {
+  return math.vec2.newp(lj_magnitude(data.distance, TARGET_KIN, EPSILON_KIN), data.azimuth)
+}
+
+# Neighbor data to LJ interaction vector
+function lj_vector_nonkin(rid, data) {
+  return math.vec2.newp(lj_magnitude(data.distance, TARGET_NONKIN, EPSILON_NONKIN), data.azimuth)
+}
+
+# Accumulator of neighbor LJ interactions
+function lj_sum(rid, data, accum) {
+  return math.vec2.add(data, accum)
+}
+
+#direct outside nodes
+function periphery() {
+  # Calculate accumulator
+	var accum = neighbors.kin().map(lj_vector_kin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+  accum = neighbors.nonkin().map(lj_vector_nonkin).reduce(lj_sum, accum)
+  #var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+  if(neighbors.count() > 0)
+    math.vec2.scale(accum, 1.0 / neighbors.count())
+  # Move according to vector
+  goto(accum.x, accum.y)
+}
+
+#direct inside nodes
+function follow_light() {
+ # light_vector = math.vec2.newp(light[0].value,light[0].angle)  #locate the light with sensor light 0 
+#	var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(light_vector.x, light_vector.y))  #consider the distance with other nodes
+  var accum = neighbors.kin().map(lj_vector_kin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+
+  if(neighbors.count() > 0)
+    math.vec2.scale(accum, 1.0 / neighbors.count())
+	goto(accum.x, accum.y)
+}
+function execute(){
+	s1.exec(periphery)  #inside part follow the light
+  s2.exec(periphery)     #outside part surrounds inside part
+}
+# Executed at init time
+function init() {
+  # Divide the swarm in two sub-swarms
+  s1 = swarm.create(1)
+  s1.select(id % 2 == 0)
+  s2 = s1.others(2)
+
+  if (s1.in()) { 
+     set_leds(255,0,0)}      #inside part have red light
+  if (s2.in()) {             #outside part have no light
+     set_leds(0,0,0)}
+}
+
+# Executed every time step
+function step() {
+  		s1.exec(periphery)  #inside part follow the light
+    s2.exec(periphery)     #outside part surrounds inside part
+		var left = proximity[0].value + proximity[1].value + proximity[2].value
+		log(" left " , left)
+		var right = proximity[6].value + proximity[7].value  
+    log(" right " , right)
+    if(left > 0 or right> 0){
+				if (left != 0){
+					set_wheels(0.0, 50.0)			
+					log("turn left")
+				} else if (right != 0){
+					set_wheels(0.0, 50.0)
+					log("turn right")
+				}else{
+					log("go straight")
+					set_wheels(10.0, 10.0)
+				}
+		}else{
+			log("go straight")
+			set_wheels(10.0, 10.0)
+		}	
+}
+
+# Execute at exit
+function destroy() {
+}
+
+function reset() {
+}
