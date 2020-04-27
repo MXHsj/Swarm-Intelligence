@@ -5,16 +5,19 @@ include "vec2.bzz"
 # laser beam increment
 increment = (3*(math.pi)/2)/682
 
+# trade-off weight between obstacle avoidance and follow light
+w = 0.0
+
 # Lennard-Jones parameters
 TARGET         = 30.0
 EPSILON        = 1500.0 
-TARGET_KIN     = 20.0
+TARGET_KIN     = 25.0
 EPSILON_KIN    = 300.0
-TARGET_NONKIN  = 30.0
+TARGET_NONKIN  = 35.0
 EPSILON_NONKIN = 500.0
 
 # time period 
-period0_1 = 180	 
+period0_1 = 150	 
 period1_2 = period0_1 + 250
  
 # Lennard-Jones interaction magnitude
@@ -68,29 +71,26 @@ function gotoLight() {
 }
 
 function avoidWall() {
-		laserID = 0
-		targetVal = 0.0
-		targeDir = 0.0
-		laserAngle = 0.0
-		valueAccum = 0.0
-		while(laserID < 682) {
-			laserVal = lidar[laserID]
-			valueAccum = valueAccum + laserVal
-			laserAngle = laserAngle + increment
-			if(laserVal > targetVal) {
-				targetVal = laserVal
-				targetDir = laserAngle
-			}
-			laserID = laserID + 1
+	sensorID = 0
+	targetVal = 0.85
+	targetDir = 0.0
+	sensorAngle = 0.0
+	sumDir = 0.0
+	while(sensorID < 8) {
+		var sensorVal = proximity[sensorID].value
+		var sensorAngle = proximity[sensorID].angle
+		if(sensorVal > 0.7) {
+			targetVal = targetVal + sensorVal
+			targetDir = targetDir + sensorAngle
+			sumDir = sumDir + 1
 		}
-		#if (valueAccum > 1000.0) {
-    	#	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(20.0*light[0].value, light[0].angle))
-		#	log("go to goal ...")
-		#}
-		#else {
-			var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(targetVal/10, targetDir/10))
-			log("avoiding wall ...")
-		#}
+		sensorID = sensorID + 1
+	}
+	targetVal = targetVal/sumDir
+	targetDir = math.pi - targetDir/sumDir
+	weightedVal = w*(targetVal/50) + (1-w)*(20.0*light[0].value)
+	weightedDir = w*targetDir + (1-w)*(light[0].angle)
+	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(weightedVal, weightedDir))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
     goto(accum.x, accum.y)

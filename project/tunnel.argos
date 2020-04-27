@@ -23,7 +23,7 @@
         <range_and_bearing     implementation="default" />
       </actuators>
       <sensors>
-        <kheperaiv_proximity  implementation="default" show_rays="false" />
+        <kheperaiv_proximity  implementation="default" show_rays="true" />
         <kheperaiv_ultrasound implementation="default" show_rays="false" />
         <kheperaiv_lidar      implementation="default" show_rays="false" />
         <kheperaiv_light      implementation="rot_z_only" />
