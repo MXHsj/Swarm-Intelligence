@@ -1,18 +1,21 @@
 ### Traveling Test ###
 
 include "vec2.bzz"
- 
+
+# laser beam increment
+increment = (3*(math.pi)/2)/682
+
 # Lennard-Jones parameters
 TARGET         = 30.0
 EPSILON        = 1500.0 
 TARGET_KIN     = 20.0
 EPSILON_KIN    = 300.0
-TARGET_NONKIN  = 35.0
-EPSILON_NONKIN = 300.0
+TARGET_NONKIN  = 30.0
+EPSILON_NONKIN = 500.0
 
 # time period 
-period0_1 = 220	 
-period1_2 = period0_1 + 180
+period0_1 = 180	 
+period1_2 = period0_1 + 250
  
 # Lennard-Jones interaction magnitude
 function lj_magnitude(dist, target, epsilon) {
@@ -64,24 +67,33 @@ function gotoLight() {
     goto(accum.x, accum.y)
 }
 
-function sumLidar(rid, data, accum) {
-		pvec = math.vec2.newp(data.value, data.angle)
-		return math.vec2.add(pvec, accum)
-}
-
 function avoidWall() {
 		laserID = 0
+		targetVal = 0.0
+		targeDir = 0.0
+		laserAngle = 0.0
+		valueAccum = 0.0
 		while(laserID < 682) {
-			frontVal = lidar[laserID].value
-			frontAngle = lidar[laserID].angle
-			log(frontVal)
+			laserVal = lidar[laserID]
+			valueAccum = valueAccum + laserVal
+			laserAngle = laserAngle + increment
+			if(laserVal > targetVal) {
+				targetVal = laserVal
+				targetDir = laserAngle
+			}
 			laserID = laserID + 1
 		}
-    var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(20.0*light[0].value, light[0].angle))
+		#if (valueAccum > 1000.0) {
+    	#	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(20.0*light[0].value, light[0].angle))
+		#	log("go to goal ...")
+		#}
+		#else {
+			var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(targetVal/10, targetDir/10))
+			log("avoiding wall ...")
+		#}
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
     goto(accum.x, accum.y)
-		goto(wall_vec.x, wall_vec.y)
 }
 
 function flashR() {
@@ -105,23 +117,26 @@ function step() {
 		if(time_step < period0_1) {
 			s1.exec(hexagon)    		
     		s2.exec(hexagon)
-			# log("hexagon formation ...")
+			log("hexagon formation ...")
 		}
 		else if(time_step < period1_2) {
 			s1.exec(membrane)
     		s2.exec(cytoplasm)
-			# log("cell lattice formation ...")
+			log("cell lattice formation ...")
 		}
 		else {
 			s1.exec(avoidWall)    		
     		s2.exec(gotoLight)
-			# log("go to goal ...")
 		}
     s1.exec(flashG)
 		s2.exec(flashR)
 		time_step = time_step + 1
 }
  
+function reset() {
+   # put your code here
+}
+
 # Execute at exit
 function destroy() {
 }
