@@ -23,7 +23,7 @@
         <range_and_bearing     implementation="default" />
       </actuators>
       <sensors>
-        <kheperaiv_proximity  implementation="default" show_rays="true" />
+        <kheperaiv_proximity  implementation="default" show_rays="false" />
         <kheperaiv_ultrasound implementation="default" show_rays="false" />
         <kheperaiv_lidar      implementation="default" show_rays="false" />
         <kheperaiv_light      implementation="rot_z_only" />
@@ -143,9 +143,9 @@
       <user_functions label="buzz_qt" />
 
       <camera>
-        <placement idx="0" position="0.061976,-0.376327,3.33213" look_at="0.0316792,-0.376245,2.33259" up="-0.999537,0.00268038,0.0302969" lens_focal_length="10" />
-        <placement idx="1" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
-        <placement idx="2" position="-0.687339,0.461376,1.87039" look_at="-0.687339,0.461376,0.870385" up="0.0422887,0.999105,0" lens_focal_length="3" />
+        <placement idx="0" position="0.0325791,0.146825,4.38351" look_at="0.0325791,0.146825,3.38351" up="0.999981,0.00614415,0" lens_focal_length="10" />
+        <placement idx="1" position="-4.65165,0,4.65165" look_at="-3.94454,0,3.94454" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="2" position="-0.835658,1.91012,2.40803" look_at="-0.605651,1.40424,1.57665" up="0.344102,-0.75682,0.555714" lens_focal_length="15" />
         <placement idx="3" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
         <placement idx="4" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
         <placement idx="5" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
