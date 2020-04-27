@@ -24,7 +24,7 @@
       </actuators>
       <sensors>
         <kheperaiv_proximity  implementation="default" show_rays="true" />
-        <kheperaiv_ultrasound implementation="default" show_rays="true" />
+        <kheperaiv_ultrasound implementation="default" show_rays="false" />
         <kheperaiv_lidar      implementation="default" show_rays="false" />
         <kheperaiv_light   implementation="rot_z_only" />
         <range_and_bearing   implementation="medium" medium="rab"
@@ -94,7 +94,7 @@
         standard deviation is 360 degrees.
     -->
     <distribute>
-      <position method="uniform" min="-2,-5,0" max="2,-3,0" />
+      <position method="uniform" min="-1.2,-4.5,0" max="1.2,-3,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
       <entity quantity="10" max_trials="100">
         <kheperaiv id="kiv">

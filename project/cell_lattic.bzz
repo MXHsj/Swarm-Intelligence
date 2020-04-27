@@ -1,12 +1,18 @@
-### Cell Lattice ##
-# the algorithm takes around 1700 steps to converge
+### Traveling Test ###
+
 include "vec2.bzz"
  
 # Lennard-Jones parameters
+TARGET				  = 30.0
+EPSILON				= 1500.0 
 TARGET_KIN     = 20.0
-EPSILON_KIN    = 500.0
-TARGET_NONKIN  = 40.0
-EPSILON_NONKIN = 250.0
+EPSILON_KIN    = 300.0
+TARGET_NONKIN  = 35.0
+EPSILON_NONKIN = 300.0
+
+# time period 
+period0_1 = 400	 
+period1_2 = period0_1 + 150
  
 # Lennard-Jones interaction magnitude
 function lj_magnitude(dist, target, epsilon) {
@@ -14,27 +20,53 @@ function lj_magnitude(dist, target, epsilon) {
 }
 
 # Neighbor data to LJ interaction vector
+function lj_vector(rid, data) {
+    return math.vec2.newp(lj_magnitude(data.distance, TARGET, EPSILON), data.azimuth)
+}
 function lj_vector_kin(rid, data) {
     return math.vec2.newp(lj_magnitude(data.distance, TARGET_KIN, EPSILON_KIN), data.azimuth)
 }
 function lj_vector_nonkin(rid, data) {
     return math.vec2.newp(lj_magnitude(data.distance, TARGET_NONKIN, EPSILON_NONKIN), data.azimuth)
 }
- 
+
 # Accumulator of neighbor LJ interactions
 function lj_sum(rid, data, accum) {
     return math.vec2.add(data, accum)
 }
  
 # Calculates and actuates the flocking interaction
-function cytoplasm() {
-    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(10*light[0].value, light[0].angle))
+function hexagon() {
+    var accum = neighbors.map(lj_vector).reduce(lj_sum, math.vec2.new(0.0, 0.0))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
     goto(accum.x, accum.y)
 }
+
+function cytoplasm() {
+    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+
 function membrane() {
-    var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(10*light[0].value, light[0].angle))
+    var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+
+function gotoLight() {
+    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(20.0*light[0].value, light[0].angle))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+
+function avoidWall() {
+	  # var distVal = proximity[0].value + proximity[1].value +proximity[0].value +proximity[0].value +proximity[0].value
+    var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(20.0*light[0].value, light[0].angle))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
     goto(accum.x, accum.y)
@@ -49,18 +81,33 @@ function flashG() {
 
 # Executed at init time
 function init() {
+		time_step = 0
     s1 = swarm.create(1)
 		s2 = swarm.create(2)
-    s1.select(id%2==0)              # sub-swarm to form membrane
-    s2.select((id+1)%2==0)          # sub-swarm to form cytoplasm     
+    s1.select(id>3)              		# sub-swarm to form membrane
+    s2.select(id<=3)          			# sub-swarm to form cytoplasm     
 }
  
 # Executed every time step
 function step() {
-    s1.exec(membrane)
+		if(time_step < period0_1) {
+			s1.exec(hexagon)    		
+    		s2.exec(hexagon)
+			log("hexagon formation ...")
+		}
+		else if(time_step < period1_2) {
+			s1.exec(membrane)
+    		s2.exec(cytoplasm)
+			log("cell lattice formation ...")
+		}
+		else {
+			s1.exec(avoidWall)    		
+    		s2.exec(gotoLight)
+			log("go to goal ...")
+		}
     s1.exec(flashG)
-    s2.exec(cytoplasm)
-    s2.exec(flashR)
+		s2.exec(flashR)
+		time_step = time_step + 1
 }
  
 # Execute at exit
