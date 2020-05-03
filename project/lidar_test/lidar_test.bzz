@@ -1,0 +1,152 @@
+### Traveling Test ###
+
+include "vec2.bzz"
+
+# laser beam increment
+increment = 3.2
+
+# Lennard-Jones parameters
+TARGET         = 30.0
+EPSILON        = 1500.0 
+TARGET_KIN     = 20.0
+EPSILON_KIN    = 300.0
+TARGET_NONKIN  = 30.0
+EPSILON_NONKIN = 500.0
+
+# time period 
+period0_1 = 1	 #180
+period1_2 = period0_1 + 2 #+250
+ 
+# Lennard-Jones interaction magnitude
+function lj_magnitude(dist, target, epsilon) {
+    return -(epsilon / dist) * ((target / dist)^4 - (target / dist)^2)
+}
+
+# Neighbor data to LJ interaction vector
+function lj_vector(rid, data) {
+    return math.vec2.newp(lj_magnitude(data.distance, TARGET, EPSILON), data.azimuth)
+}
+function lj_vector_kin(rid, data) {
+    return math.vec2.newp(lj_magnitude(data.distance, TARGET_KIN, EPSILON_KIN), data.azimuth)
+}
+function lj_vector_nonkin(rid, data) {
+    return math.vec2.newp(lj_magnitude(data.distance, TARGET_NONKIN, EPSILON_NONKIN), data.azimuth)
+}
+
+# Accumulator of neighbor LJ interactions
+function lj_sum(rid, data, accum) {
+    return math.vec2.add(data, accum)
+}
+ 
+# Calculates and actuates the flocking interaction
+function hexagon() {
+    var accum = neighbors.map(lj_vector).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+
+function cytoplasm() {
+    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+
+function membrane() {
+    var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+
+function gotoLight() {
+    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(20.0*light[0].value, light[0].angle))
+    if(neighbors.count() > 0)
+        math.vec2.scale(accum, 1.0 / neighbors.count())
+    goto(accum.x, accum.y)
+}
+search_time = 0
+function avoidWall() {
+
+    laserID = 0.0
+    laserAngle = 0.0
+    valueAccum = 0.0
+    targetVal = 0.0
+    targetDir = (math.pi)/18
+    left_boundary = 0.0;
+    right_boundary = 681.0;
+    n = 0.0
+    while(laserID < 682) {
+        laserVal = lidar[laserID]
+
+        if((laserID > 0 ) and (laserID < 681))
+        if((laserVal == 0) and (lidar[laserID-1]!= 0))
+            {left_boundary = laserID}
+        if((laserVal == 0) and (lidar[laserID+1]!= 0))
+            {right_boundary = laserID}
+        if((laserVal == 0) and (lidar[laserID-1] == 0) and (lidar[laserID+1] == 0))
+            {n = n + 1}    
+            laserID = laserID + 1.0
+		}
+        if ((n > 5) and (n < 100)){
+            search_time = 0
+            targetDir = ((left_boundary+right_boundary)/2 - 340.5)/increment
+            targetVal = 410
+            log( "robot id: ",id, " found a valid tunnel", "direction:",targetDir)
+        }
+        else
+            {search_time = search_time +1}
+
+#    log("laserID:  ",laserID)
+#    log(laserVal)
+#    if ((n>5.0) and (n<100.0))
+#    {
+#			var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(targetVal/5.0, targetDir))
+#    }
+#   else{
+#		 	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(0.0,0.0))
+#    }
+#	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(targetVal/10.0, targetDir))
+#	log("avoiding wall ...")
+#    if(neighbors.count() > 0)
+#       math.vec2.scale(accum, 1.0 / neighbors.count())	
+#    log(search_time)
+    var accum = math.vec2.new(targetVal/6, targetDir)
+    if (search_time > 50 )
+        {accum.x = 20.0*light[0].value
+         accum.y = light[0].angle}
+    goto(accum.x, accum.y)
+}
+
+function flashR() {
+    set_leds(255,0,0)							# robots in the center
+}
+function flashG() {
+    set_leds(0,255,0)							# robots at the peripheral
+}
+
+# Executed at init time
+function init() {
+	  time_step = 0
+    
+    s2 = swarm.create(1)
+    s2.select(id==0)          			# sub-swarm to form cytoplasm     
+}
+
+
+# Executed every time step
+function step() {
+
+    s2.exec(avoidWall)
+      
+		time_step = time_step + 1
+}
+ 
+function reset() {
+   # put your code here
+}
+
+# Execute at exit
+function destroy() {
+}
