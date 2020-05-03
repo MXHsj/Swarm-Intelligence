@@ -1,0 +1,88 @@
+include "vec2.bzz"
+
+function random_walk()
+{
+    var left = proximity[0].value + proximity[1].value + proximity[2].value
+	var right = proximity[6].value + proximity[7].value  
+    if(left > 0 or right> 0) {
+        if (left != 0) {
+            set_wheels(0.0, 50.0)			
+        } 
+        else if (right != 0) {
+            set_wheels(0.0, 50.0)
+        }
+        else {
+            set_wheels(10.0, 10.0)
+        }
+    }
+    else {
+        set_wheels(10.0, 10.0)
+    }	
+}
+
+function sum_sensor(rid, data, accum) {
+	svec = math.vec2.newp(data.value, data.angle)
+	return math.vec2.add(svec, accum)
+}
+
+function gotoLight1() {
+	light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
+    goto(10*light_vector.x, 10*light_vector.y)
+}
+
+function send_pose() {
+    v.put("pose_x",pose.position.x)
+    v.put("pose_y",pose.position.y)
+}
+
+function gotoLight2() {
+    x_goal = v.get("pose_x")
+    y_goal = v.get("pose_y")
+    x = pose.position.x
+    y = pose.position.y 
+    theta = pose.orientation.yaw
+    x_local = math.cos(theta)*(x_goal-x)+math.sin(theta)*(y_goal-x)
+    y_local = -math.sin(theta)*(x_goal-x)+math.cos(theta)*(y_goal-y) 
+    goto(x_local,y_local)
+}
+
+function init() {
+    s1 = swarm.create(1)
+    s1.select(id == 0)
+    s2 = s1.others(2)
+    v = stigmergy.create(1)
+    step_time = 0
+}
+
+function step() {
+    if (step_time <= 330) {
+        log("sending pioneer")
+        s1.exec(gotoLight1)
+        s1.exec(send_pose)
+    }
+    else {
+        s1.exec(send_pose)
+        light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
+        sensorID = 0
+        sum = 0
+        while (sensorID < 8) {
+            sum = sum + light[sensorID].value
+            sensorID = sensorID + 1
+        }
+        if (sum > 0) {
+            s2.exec(random_walk)
+            log("random walking")
+        } 
+        else {
+            s2.exec(gotoLight2)
+            log("pushing")
+        }
+    }
+    step_time = step_time + 1
+}
+
+function reset() {
+}
+
+function destroy() {
+}
