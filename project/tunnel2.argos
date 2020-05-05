@@ -40,6 +40,15 @@
     </buzz_controller_kheperaiv>
 
   </controllers>
+  <!-- ****************** -->
+  <!-- * Loop functions * -->
+  <!-- ****************** -->
+  <loop_functions library="build/libcell_lattic"
+                  label="cell_lattic"
+                  outfile="data2.dat"
+                  tasks = "2"> 
+  </loop_functions>  
+
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
