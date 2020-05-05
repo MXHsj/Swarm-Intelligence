@@ -1,0 +1,182 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+
+  <!-- ************************* -->
+  <!-- * General configuration * -->
+  <!-- ************************* -->
+  <framework>
+    <system threads="0" />
+    <experiment length="0"
+                ticks_per_second="10"
+                random_seed="90" />
+  </framework>
+
+  <!-- *************** -->
+  <!-- * Controllers * -->
+  <!-- *************** -->
+  <controllers>
+
+    <buzz_controller_kheperaiv id="project">
+      <actuators>
+        <differential_steering implementation="default" />
+        <leds                  implementation="default" medium="leds" />
+        <range_and_bearing     implementation="default" />
+      </actuators>
+      <sensors>
+        <kheperaiv_proximity  implementation="default" show_rays="true" />
+        <kheperaiv_ultrasound implementation="default" show_rays="false" />
+        <kheperaiv_lidar      implementation="default" show_rays="false" />
+        <kheperaiv_light      implementation="rot_z_only" />
+        <range_and_bearing   implementation="medium" medium="rab"
+                             show_rays="true" noise_std_dev="0" />
+        <positioning         implementation="default" />
+      </sensors>
+      <params>
+        <wheel_turning hard_turn_angle_threshold="90"
+                       soft_turn_angle_threshold="70"
+                       no_turn_angle_threshold="10"
+                       max_speed="10" />
+      </params>
+    </buzz_controller_kheperaiv>
+
+  </controllers>
+  <!-- ****************** -->
+  <!-- * Loop functions * -->
+  <!-- ****************** -->
+  <loop_functions library="build/libcell_lattic"
+                  label="cell_lattic"
+                  outfile="data3.dat"
+                  tasks = "2"> 
+  </loop_functions>  
+
+
+  <!-- *********************** -->
+  <!-- * Arena configuration * -->
+  <!-- *********************** -->
+  <arena size="4, 10, 6" center="0,0,3">
+    
+    <light id="light"
+           position="-2,4,2.0"
+           orientation="0,0,0"
+           color="yellow"
+           intensity="100.0"
+           medium="light" />
+    
+    <light id="light2"
+           position="1.8,4,2.0"
+           orientation="0,0,0"
+           color="yellow"
+           intensity="100.0"
+           medium="light" />
+    <light id="light3"
+           position="0,4,2.0"
+           orientation="0,0,0"
+           color="yellow"
+           intensity="100.0"
+           medium="light" />
+
+
+    <box id="wall_north" size="4,0.1,0.3" movable="false">
+      <body position="0,5,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_south" size="4,0.1,0.3" movable="false">
+      <body position="0,-5,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_east" size="0.1,10,0.3" movable="false">
+      <body position="2,0,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_west" size="0.1,10,0.3" movable="false">
+      <body position="-2,0,0" orientation="0,0,0" />
+    </box>
+    
+    <box id="wall_leftmiddle" size="1,2,0.3" movable="false">
+      <body position="-1.5,0,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_rightmiddle" size="1,2,0.3" movable="false">
+      <body position="1.5,0,0" orientation="0,0,0" />
+    </box>
+     <box id="wall_leftbottom" size="1.5,2,0.3" movable="false">
+      <body position="-1.25,-2.0,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_rightbottom" size="1.5,2,0.3" movable="false">
+      <body position=" 1.25,-2.0,0" orientation="0,0,0" />
+    </box>
+
+
+    <!--
+        You can distribute entities randomly. Here, we distribute
+        10 foot-bots in this way:
+        - the position is uniformly distributed
+        on the ground, in the square whose corners are (-2,-2) and (2,2)
+        - the orientations are non-zero only when rotating around Z and chosen
+        from a gaussian distribution, whose mean is zero degrees and
+        standard deviation is 360 degrees.
+    -->
+    <distribute>
+      <position method="uniform" min="-1.2,-4.5,0" max="1.2,-3,0" />
+      <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
+      <entity quantity="10" max_trials="100">
+        <kheperaiv id="kiv">
+          <controller config="project" />
+        </kheperaiv>
+      </entity>
+    </distribute>
+    
+    <!-- <distribute>
+      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <orientation method="uniform" min="0,0,0" max="360,0,0" />
+      <entity quantity="7" max_trials="100">
+        <box id="b" size="0.3,0.3,0.2" movable="false" />
+      </entity>
+    </distribute>
+    <distribute>
+      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="7" max_trials="100">
+        <cylinder id="c" height="0.2" radius="0.15" movable="false" />
+      </entity>
+    </distribute> -->
+  </arena>
+
+  <!-- ******************* -->
+  <!-- * Physics engines * -->
+  <!-- ******************* -->
+  <physics_engines>
+    <dynamics2d id="dyn2d" />
+  </physics_engines>
+
+  <!-- ********* -->
+  <!-- * Media * -->
+  <!-- ********* -->
+  <media>
+    <range_and_bearing id="rab" />
+    <led id="leds" />
+    <led id="light" />
+  </media>
+
+  <!-- ****************** -->
+  <!-- * Visualization * -->
+  <!-- ****************** -->
+  <visualization>
+    <qt-opengl>
+      <user_functions label="buzz_qt" />
+
+      <camera>
+        <placement idx="0" position="0.0325791,0.146825,4.38351" look_at="0.0325791,0.146825,3.38351" up="0.999981,0.00614415,0" lens_focal_length="10" />
+        <placement idx="1" position="-4.65165,0,4.65165" look_at="-3.94454,0,3.94454" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="2" position="-0.835658,1.91012,2.40803" look_at="-0.605651,1.40424,1.57665" up="0.344102,-0.75682,0.555714" lens_focal_length="15" />
+        <placement idx="3" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="4" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="5" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="6" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="7" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="8" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="9" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="10" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+        <placement idx="11" position="-2,0,2" look_at="0,0,0" up="0.707107,0,0.707107" lens_focal_length="20" />
+      </camera>
+
+    </qt-opengl>
+  </visualization>
+
+  </argos-configuration>
