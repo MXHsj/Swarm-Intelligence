@@ -7,12 +7,18 @@ static CRange<Real> STIMULUS_RANGE(0.0, 1000.0);
 
 struct GetRobotData: public CBuzzLoopFunctions::COperation{
 	GetRobotData(int n_tasks):m_vecTaskCounts(n_tasks, 0){}
+	float m_floatPositionX; 
+	float m_floatPositionY; 
 	virtual void operator()(const std::string& str_robot_id, buzzvm_t t_vm){
-		buzzobj_t tTask = BuzzGet(t_vm, "task");
+		buzzobj_t positionX = BuzzGet(t_vm, "positionX");
+		buzzobj_t positionY = BuzzGet(t_vm, "positionY");
+		buzzobj_t tTask = BuzzGet(t_vm, "tasks");
 		int nTask = buzzobj_getint(tTask);
+		m_floatPositionX = buzzobj_getfloat(positionX);
+		m_floatPositionY = buzzobj_getfloat(positionY);
+
 		++m_vecTaskCounts[nTask]; 
 		m_vecRobotsTasks[t_vm->robot] = nTask; 
-		//BuzzTableOpen(t_vm, "cell_lattic")
 	}
 	std::vector<int> m_vecTaskCounts;
    	/* Task-robot mapping */
@@ -55,7 +61,8 @@ void CCellLattic::PostStep(){
 	for(int i = 0; i<GetNumRobots(); ++i){
 		m_cOutFile << GetSpace().GetSimulationClock() << "\t"
 					<< i << "\t"
-					<< cGetRobotData.m_vecRobotsTasks[i];
+					<< cGetRobotData.m_floatPositionX << "\t"
+					<< cGetRobotData.m_floatPositionY;
 		m_cOutFile << std::endl; 
 	}
 }

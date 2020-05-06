@@ -2,7 +2,8 @@
 # takes around 3000 steps to converge
 
 include "vec2.bzz"
-
+positionX=0.0
+positionY=0.0
 # laser beam increment
 increment = (3.0*(math.pi)/2.0)/682.0
 
@@ -123,6 +124,9 @@ function init() {
 	s2 = swarm.create(2)
   s1.select(id>3)              		# sub-swarm to form membrane
   s2.select(id<=3)          			# sub-swarm to form cytoplasm     
+  positionX=pose.position.x
+  positionY=pose.position.y
+
 }
  
 
@@ -130,6 +134,9 @@ function init() {
 function step() {
 	s1.exec(avoidWall)    		
 	s2.exec(gotoLight)
+	positionX=pose.position.x
+	positionY=pose.position.y
+
 }
  
 
