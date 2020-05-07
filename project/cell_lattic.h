@@ -21,7 +21,5 @@ private:
 private:
 	std::string m_strOutFile;
 	std::ofstream m_cOutFile; 
-	std::vector<float> m_vecStimuli;
-	CRandom::CRNG* m_pcRNG;
 };
 #endif
