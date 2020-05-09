@@ -11,9 +11,9 @@ increment = (3.0*(math.pi)/2.0)/682.0
 TARGET         = 30.0
 EPSILON        = 1500.0 
 TARGET_KIN     = 15.0
-EPSILON_KIN    = 1000.0
+EPSILON_KIN    = 900.0
 TARGET_NONKIN  = 30.0
-EPSILON_NONKIN = 1200.0
+EPSILON_NONKIN = 1500.0
 
 # time period 
 period0_1 = 100	 
@@ -104,17 +104,35 @@ function avoidWall() {
 		}
 		sensorID = sensorID + 1
 	}
-	if (targetVal > 1.0) {
+
+	if (targetVal >= 1.0) {
 		weightedVal = targetVal/15.0
 		weightedDir = -targetDir/sumDir
+
+		if (TARGET_KIN>15) {
+			TARGET_KIN = TARGET_KIN - 1.5
+		}
+		if (TARGET_NONKIN>30) {
+			TARGET_KIN = TARGET_KIN - 1.0
+		}
+
 		log("avoiding wall ...")
 	}
 	else {
 	light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
-		weightedVal = 20.0*light_vector.x
+		weightedVal = 22.0*light_vector.x
 		weightedDir = light_vector.y
+
+		if (TARGET_KIN<35) {
+			TARGET_KIN = TARGET_KIN + 1.0
+		}
+		if (TARGET_NONKIN<40) {
+			TARGET_KIN = TARGET_KIN + 0.8
+		}
+
 		log("go to goal ...")
 	}
+
 	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(weightedVal, weightedDir))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
