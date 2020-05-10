@@ -1,5 +1,6 @@
 ### Traveling Test ###
-# takes around 3000 steps to converge
+# Adaptive parameters
+# takes around 2500 steps to converge
 
 include "vec2.bzz"
 positionX=0.0
@@ -180,7 +181,6 @@ function step() {
 	else {
 		s1.exec(avoidWall)    		
 		s2.exec(gotoLight)
-		# log("go to goal")
 	}
 	positionX=pose.position.x
   	positionY=pose.position.y

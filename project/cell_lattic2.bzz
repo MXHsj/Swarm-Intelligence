@@ -1,44 +1,58 @@
 ### Traveling Test ###
+# non-adaptive parameters
 # takes around 3000 steps to converge
 
 include "vec2.bzz"
 positionX=0.0
 positionY=0.0
-# laser beam increment
-increment = (3.0*(math.pi)/2.0)/682.0
 
 # Lennard-Jones parameters
 TARGET         = 30.0
 EPSILON        = 1500.0 
 TARGET_KIN     = 15.0
-EPSILON_KIN    = 1000.0
+EPSILON_KIN    = 1600.0
 TARGET_NONKIN  = 30.0
-EPSILON_NONKIN = 1200.0
+EPSILON_NONKIN = 1600.0
 
+# time period 
+period0_1 = 80	 
+period1_2 = period0_1 + 200
+ 
 # Lennard-Jones interaction magnitude
 function lj_magnitude(dist, target, epsilon) {
     return -(epsilon / dist) * ((target / dist)^4 - (target / dist)^2)
 }
+
+
 # Neighbor data to LJ interaction vector
 function lj_vector(rid, data) {
     return math.vec2.newp(lj_magnitude(data.distance, TARGET, EPSILON), data.azimuth)
 }
+
+
 function lj_vector_kin(rid, data) {
     return math.vec2.newp(lj_magnitude(data.distance, TARGET_KIN, EPSILON_KIN), data.azimuth)
 }
+
+
 function lj_vector_nonkin(rid, data) {
     return math.vec2.newp(lj_magnitude(data.distance, TARGET_NONKIN, EPSILON_NONKIN), data.azimuth)
 }
+
+
 # Accumulator of neighbor LJ interactions
 function lj_sum(rid, data, accum) {
     return math.vec2.add(data, accum)
 }
+
+
 # create sensor vector
 function sum_sensor(rid, data, accum) {
 	svec = math.vec2.newp(data.value, data.angle)
 	return math.vec2.add(svec, accum)
 }
  
+
 # Calculates and actuates the flocking interaction
 function hexagon() {
     var accum = neighbors.map(lj_vector).reduce(lj_sum, math.vec2.new(0.0, 0.0))
@@ -46,64 +60,63 @@ function hexagon() {
         math.vec2.scale(accum, 1.0 / neighbors.count())
     goto(accum.x, accum.y)
 }
+
+
 function cytoplasm() {
     var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
-    hexagon()
     goto(accum.x, accum.y)
 }
+
+
 function membrane() {
     var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(0.0, 0.0))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
-    hexagon()
     goto(accum.x, accum.y)
 }
 
+
 function gotoLight() {
-		cytoplasm()
-		light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
+	light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
     var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(24*light_vector.x, light_vector.y))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
-    flashR()
     goto(accum.x, accum.y)
 }
 
 
 function avoidWall() {
-	membrane()
 	sensorID = 0
-	targetVal = 0.85
+	targetVal = 0.0
 	targetDir = 0.0
 	sensorAngle = 0.0
 	sumDir = 0.0
 	while (sensorID < 8) {
 		var sensorVal = proximity[sensorID].value
 		var sensorAngle = proximity[sensorID].angle
-		if (sensorVal > 0.7) {
+		if (sensorVal > 0.9) {
 			targetVal = targetVal + sensorVal
 			targetDir = targetDir + sensorAngle
 			sumDir = sumDir + 1.0
 		}
 		sensorID = sensorID + 1
 	}
-	if (targetVal > 1.0) {
+
+	if (targetVal >= 1.0) {
 		weightedVal = targetVal/15.0
 		weightedDir = -targetDir/sumDir
-		log("avoiding wall ...")
 	}
 	else {
 	light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
-		weightedVal = 20.0*light_vector.x
+		weightedVal = 23.0*light_vector.x
 		weightedDir = light_vector.y
-		log("go to goal ...")
 	}
+
 	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(weightedVal, weightedDir))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
-		flashG()
     goto(accum.x, accum.y)
 }
 
@@ -120,23 +133,37 @@ function flashG() {
 
 # Executed at init time
 function init() {
-	s1 = swarm.create(1)
+	time_step = 0
+    s1 = swarm.create(1)
 	s2 = swarm.create(2)
-  s1.select(id>3)              		# sub-swarm to form membrane
-  s2.select(id<=3)          			# sub-swarm to form cytoplasm     
-  positionX=pose.position.x
-  positionY=pose.position.y
-
+    s1.select(id>3)              		# sub-swarm to form membrane
+    s2.select(id<=3)          			# sub-swarm to form cytoplasm     
+  	positionX=pose.position.x
+  	positionY=pose.position.y
 }
  
 
 # Executed every time step
 function step() {
-	s1.exec(avoidWall)    		
-	s2.exec(gotoLight)
+	if(time_step < period0_1) {
+		s1.exec(hexagon)    		
+		s2.exec(hexagon)
+		log("hexagon formation ...")
+	}
+	else if(time_step < period1_2) {
+		s1.exec(membrane)
+		s2.exec(cytoplasm)
+		log("cell lattice formation ...")
+	}
+	else {
+		s1.exec(avoidWall)    		
+		s2.exec(gotoLight)
+	}
 	positionX=pose.position.x
-	positionY=pose.position.y
-
+  	positionY=pose.position.y
+    s1.exec(flashG)
+	s2.exec(flashR)
+	time_step = time_step + 1
 }
  
 
