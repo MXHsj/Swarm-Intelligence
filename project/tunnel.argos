@@ -73,10 +73,10 @@
     <box id="wall_west" size="0.1,10,0.3" movable="false">
       <body position="-2,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_lefttop" size="1.5,2,0.3" movable="false">
+    <box id="wall_lefttop" size="1.2,2,0.3" movable="false">
       <body position="-1.25,2,0" orientation="0,0,0" />
     </box>
-    <box id="wall_2=righttop" size="1.5,2,0.3" movable="false">
+    <box id="wall_2=righttop" size="1.2,2,0.3" movable="false">
       <body position="1.25,2,0" orientation="0,0,0" />
     </box>
     <box id="wall_leftmiddle" size="1,2,0.3" movable="false">
@@ -85,10 +85,10 @@
     <box id="wall_rightmiddle" size="1,2,0.3" movable="false">
       <body position="1.5,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_leftbottom" size="1.5,2,0.3" movable="false">
+    <box id="wall_leftbottom" size="1.2,2,0.3" movable="false">
       <body position="-1.25,-2.0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_rightbottom" size="1.5,2,0.3" movable="false">
+    <box id="wall_rightbottom" size="1.2,2,0.3" movable="false">
       <body position=" 1.25,-2.0,0" orientation="0,0,0" />
     </box>
 

@@ -9,9 +9,9 @@ positionY=0.0
 TARGET         = 30.0
 EPSILON        = 1500.0 
 TARGET_KIN     = 15.0
-EPSILON_KIN    = 1000.0
+EPSILON_KIN    = 1600.0
 TARGET_NONKIN  = 30.0
-EPSILON_NONKIN = 1500.0
+EPSILON_NONKIN = 1600.0
 
 # time period 
 period0_1 = 80	 
@@ -79,19 +79,19 @@ function membrane() {
 
 function gotoLight() {
 	light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
-    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(22*light_vector.x, light_vector.y))
+    var accum = neighbors.map(lj_vector_kin).reduce(lj_sum, math.vec2.new(24*light_vector.x, light_vector.y))
     if(neighbors.count() > 0)
         math.vec2.scale(accum, 1.0 / neighbors.count())
     goto(accum.x, accum.y)
 
 	if (v.get("expand") == 1) {
-		if (TARGET_KIN<=45) {
-			TARGET_KIN = TARGET_KIN + 1.5
+		if (TARGET_KIN<25) {
+			TARGET_KIN = TARGET_KIN + 1.0
 		}
 	}
 	else if (v.get("expand") == 0) {
-		if (TARGET_KIN>=15) {
-			TARGET_KIN = TARGET_KIN - 1.6
+		if (TARGET_KIN>15) {
+			TARGET_KIN = TARGET_KIN - 1.5
 		}
 	}
 	
@@ -100,14 +100,14 @@ function gotoLight() {
 
 function avoidWall() {
 	sensorID = 0
-	targetVal = 0.85
+	targetVal = 0.0
 	targetDir = 0.0
 	sensorAngle = 0.0
 	sumDir = 0.0
 	while (sensorID < 8) {
 		var sensorVal = proximity[sensorID].value
 		var sensorAngle = proximity[sensorID].angle
-		if (sensorVal > 0.8) {
+		if (sensorVal > 0.9) {
 			targetVal = targetVal + sensorVal
 			targetDir = targetDir + sensorAngle
 			sumDir = sumDir + 1.0
@@ -119,13 +119,10 @@ function avoidWall() {
 		weightedVal = targetVal/15.0
 		weightedDir = -targetDir/sumDir
 
-		
 		v.put("expand",0)
-		if (TARGET_NONKIN>=30) {
-			TARGET_NONKIN = TARGET_NONKIN - 2.0
+		if (TARGET_NONKIN>30) {
+			TARGET_NONKIN = TARGET_NONKIN - 1.5
 		}
-
-		log("avoiding wall ...")
 	}
 	else {
 	light_vector = reduce(light, sum_sensor, math.vec2.new(0.0, 0.0))
@@ -133,11 +130,9 @@ function avoidWall() {
 		weightedDir = light_vector.y
 		
 		v.put("expand",1)
-		if (TARGET_NONKIN<=55) {
+		if (TARGET_NONKIN<48) {
 			TARGET_NONKIN = TARGET_NONKIN + 0.5
 		}
-
-		log("go to goal ...")
 	}
 
 	var accum = neighbors.map(lj_vector_nonkin).reduce(lj_sum, math.vec2.new(weightedVal, weightedDir))
