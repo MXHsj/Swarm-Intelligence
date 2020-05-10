@@ -5,6 +5,10 @@
 
 
 struct GetRobotData: public CBuzzLoopFunctions::COperation{
+
+
+	// GetRobotData(int n_tasks) : m_vecTaskCounts(n_tasks, 0) {}
+
 	float m_floatPositionX; 
 	float m_floatPositionY; 
 	float m_targetKin; 
@@ -22,7 +26,26 @@ struct GetRobotData: public CBuzzLoopFunctions::COperation{
 		m_targetKin = buzzobj_getfloat(targetKin); 
 		m_targetNonKin = buzzobj_getfloat(targetNonKin); 
 
+		m_vecRobotsTasks[t_vm->robot] = m_floatPositionX;
+		m_vecRobotsTasks2[t_vm->robot] = m_floatPositionY;
+
+
+
+		// for(int i = 0; i < m_vecTaskCounts.size(); ++i) {
+  //        /* Get the object */
+  //      		buzzobj_t positionX = BuzzGet(t_vm, "positionX");
+  //         Get the value 
+		// 	m_floatPositionX = buzzobj_getfloat(positionX);
+  //        /* Set the mapping */
+  //       	m_vecRobotsThresholds[t_vm->robot][i] = m_floatPositionX;
+         
+  //     }
+
 	}
+	   std::map<int,float> m_vecRobotsTasks;
+	   std::map<int,float> m_vecRobotsTasks2;
+
+
 };
 
 void CCellLattic::Init(TConfigurationNode& t_tree){
@@ -46,8 +69,8 @@ void CCellLattic::PostStep(){
 	for(int i = 0; i<GetNumRobots(); ++i){
 		m_cOutFile << GetSpace().GetSimulationClock() << "\t"
 					<< i << "\t"
-					<< cGetRobotData.m_floatPositionX << "\t"
-					<< cGetRobotData.m_floatPositionY << "\t"
+					<< cGetRobotData.m_vecRobotsTasks[i] << "\t"
+					<< cGetRobotData.m_vecRobotsTasks2[i] << "\t"
 					<< cGetRobotData.m_targetKin << "\t"
 					<< cGetRobotData.m_targetNonKin;
 		m_cOutFile << std::endl; 
