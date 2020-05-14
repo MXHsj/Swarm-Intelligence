@@ -1,4 +1,6 @@
 ## Tunnel Traversing Swarm
+Xihan Ma | Emily Hao | Ran Jin
+
 
 ## Compiling the code
 $ cd code
@@ -12,8 +14,12 @@ $ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make
 
 ### Running Guide
-> run cell_lattice.argos to see preliminary results of 10 robots traveling through the tunnel keeping a cell shaped formation using light and proximity sensor.
+> run tunnel.argos and cell_lattic.bzz for 10 robots traveling through the tunnel keeping a cell shaped formation using light and proximity sensor while changing the adpative signals to expand and shrink the group size. 
 
-> run lidar_test.argos to see preliminary results of 1 robot traveling through the tunnel under the guidance of the lidar scanner.
+> run tunnel.argos and cell_lattic2.bzz for 10 robots traveling through the tunnel keeping a cell shaped formation using light and proximity sensor with fixed signals. 
+
+tunnel1-tunnel6.argos are experiments with varies tunnels and obstacles. 
+analysis.m and plot.py are used to create plots for analysis
+We also attached the plots and end results of the trails we run. 
 
 
