@@ -6,6 +6,7 @@
 4. **Obstacle Avoidance**
 5. **Shape Formation**
 6. **Task Allocation**
+7. **Collective Transport**
 
 python depenencies
 - python3
@@ -44,3 +45,8 @@ buzz & argos installation
 > task_allocation.bzz
 
 > Implement the Threshold Model proposed by Theraulaz et al. Two types of tasks (0,1) are allocated among 5 agents. The simulation is run for 3000 time steps where specialization on tasks can be observed.
+
+### Collective Transport
+> collective_transport.bzz
+
+> A number of Khepera robots collectively transport a box initially located at the center of the arena to the light source. The robots move randomly when the light sensors detect light and move towards the light source position when the light sensors are blocked. Experiments are done with different group size and different box mass.
