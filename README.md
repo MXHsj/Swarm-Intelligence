@@ -7,6 +7,7 @@
 5. **Shape Formation**
 6. **Task Allocation**
 7. **Collective Transport**
+8. **Project**
 
 python depenencies
 - python3
@@ -50,3 +51,6 @@ buzz & argos installation
 > collective_transport.bzz
 
 > A number of Khepera robots collectively transport a box initially located at the center of the arena to the light source. The robots move randomly when the light sensors detect light and move towards the light source position when the light sensors are blocked. Experiments are done with different group size and different box mass.
+
+### Course Project
+> A group of agents form cell-lattice formation and collectively traverse through a tunnel-like environment using modified Lennard-Jones potential approach. The distance between agents is dynamically changing according to the width of the tunnel: the swarm shrinks when encountering with narrow tunnel and expands when traveling through wide open area
