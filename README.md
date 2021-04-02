@@ -54,3 +54,5 @@ buzz & argos installation
 
 ### Course Project
 > A group of agents form cell-lattice formation and collectively traverse through a tunnel-like environment using modified Lennard-Jones potential approach. The distance between agents is dynamically changing according to the width of the tunnel: the swarm shrinks when encountering with narrow tunnel and expands when traveling through wide open area
+
+### Test
